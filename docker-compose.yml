@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik:v2.0.0-alpha3 # The official v2.0 Traefik docker image
+    #command: --api --providers.docker
+    ports:
+      - "5432:5432"     # The HTTP port
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      - /home/marius/git/traefik-tcp/traefik.toml:/etc/traefik/traefik.toml
+
+  # ...
+  whoami:
+    image: containous/whoami # A container that exposes an API to show its IP address
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+
+  postgres:
+    image: postgres:latest
+    labels:
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`postgres.docker.localhost`)"

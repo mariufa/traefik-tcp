@@ -1,0 +1,11 @@
+[api]
+
+[entrypoints]
+  #[entrypoint.web]
+  #  address = ":90"
+
+  [entrypoint.tcp]
+    address = ":5432"
+
+[providers.docker]
+endpoint = "unix:///var/run/docker.sock"
